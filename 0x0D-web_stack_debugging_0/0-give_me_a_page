@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 #Starting apache server inside Docker to return Hello Holberton
 
-service apache2 start
+sudo service apache2 start
