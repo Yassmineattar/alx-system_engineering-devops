@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#This script configure HAproxy on lb-01 server.
+
+#Update packages and instal HAProxy
+sudo apt-get -y update
+sudo apt-get -y install haproxy
+
+#Configure HAProxy
+server_conf=\
+"
+frontend yassmine-attar.tech
+	bind *:80
+	mode http
+	default_backend web-servers
+
+backend web-servers
+	balance roundrobin
+	server 511284-web-01 54.210.148.191:80 check
+	server 511284-web-02 34.229.66.156:80 check
+"
+echo "$server_conf" | sudo tee -a /etc/haproxy/haproxy.cfg
+
+echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
+#Restart HAProxy service
+sudo service haproxy restart
