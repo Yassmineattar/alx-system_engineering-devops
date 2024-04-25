@@ -10,21 +10,14 @@ if __name__ == '__main__':
 
     url = base_Url + "/" + employee_Id
     response = requests.get(url)
-    employee_Name = response.json()['name']
+    username = response.json().get('username')
 
     todo_Url = url + "/todos"
     response = requests.get(todo_Url)
     tasks = response.json()
-    done = 0
-    done_tasks = []
 
-    for task in tasks:
-        if task.get('completed') is True:
-            done_tasks.append(task)
-            done += 1
-
-    print("Employee {} is done with tasks({}/{}):"
-          .format(employee_Name, done, len(tasks)))
-
-    for task in done_tasks:
-        print("\t {}".format(task.get('title')))
+    with open('{}.csv'.format(employee_Id), 'w') as file:
+        for task in tasks:
+            file.write('"{}","{}","{}","{}"\n'
+                       .format(employee_Id, username, task.get('completed'),
+                               task.get('title')))
