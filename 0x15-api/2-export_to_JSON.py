@@ -1,29 +1,31 @@
 #!/usr/bin/python3
-"""Accessing a REST API for todo lists of employees"""
+""" This python script exports all data in json file """
 
 import json
 import requests
 import sys
 
+if __name__ == "__main__":
 
-if __name__ == '__main__':
-    employee_Id = sys.argv[1]
-    base_Url = "https://jsonplaceholder.typicode.com/users"
-    url = base_Url + "/" + employee_Id
+    userId = sys.argv[1]
+    user = requests.get(
+            "https://jsonplaceholder.typicode.com/users/{}"
+            .format(userId))
 
-    response = requests.get(url)
-    username = response.json().get('username')
+    todos = requests.get("https://jsonplaceholder.typicode.com/todos")
+    todos = todos.json()
+    userdict = {}
+    tasks = []
 
-    todo_Url = url + "/todos"
-    response = requests.get(todo_Url)
-    tasks = response.json()
+    for task in todos:
+        if task.get('userId') == int(userId):
+            taskdict = {
+                    "task": task.get('title'),
+                    "completed": task.get('completed'),
+                    "username": user.json().get('username')}
+            tasks.append(taskdict)
+    userdict[userId] = tasks
 
-    dictionary = {employee_Id: []}
-    for task in tasks:
-        dictionary[employee_Id].append({
-            "task": task.get('title'),
-            "completed": task.get('completed'),
-            "username": username
-        })
-    with open('{}.json'.format(employee_Id), 'w') as filename:
-        json.dump(dictionary, filename)
+    filename = userId + ".json"
+    with open(filename, 'w') as jsonf:
+        json.dump(userdict, jsonf)
