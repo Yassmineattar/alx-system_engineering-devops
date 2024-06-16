@@ -10,13 +10,12 @@ server_conf=\
 "
 frontend yassmine-attar.tech
 	bind *:80
-	mode http
 	default_backend web-servers
 
 backend web-servers
 	balance roundrobin
-	server 511284-web-01 54.210.148.191:80 check
-	server 511284-web-02 34.229.66.156:80 check
+	server 447553-web-01 100.25.38.120:80 check
+	server 447553-web-02 18.234.168.234:80 check
 "
 echo "$server_conf" | sudo tee -a /etc/haproxy/haproxy.cfg
 
